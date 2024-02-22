@@ -1,20 +1,17 @@
 package com.example.demo.domain.event;
 
-import com.example.demo.domain.event.Event;
-import com.example.demo.domain.event.EventService;
 import com.example.demo.domain.event.dto.EventDTO;
 import com.example.demo.domain.event.dto.EventMapper;
 import java.util.List;
 import java.util.UUID;
 
-import com.example.demo.domain.user.User;
+import com.example.demo.domain.user.UserService;
 import com.example.demo.domain.user.dto.UserDTO;
-import com.example.demo.domain.user.dto.UserRegisterDTO;
+import com.example.demo.domain.user.dto.UserMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +29,17 @@ public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
 
+    private final UserService userService;
+
+    private final UserMapper userMapper;
+
+
     @Autowired
-    public EventController(EventService eventService, EventMapper eventMapper) {
+    public EventController(EventService eventService, EventMapper eventMapper, UserService userService, UserMapper userMapper) {
         this.eventService = eventService;
         this.eventMapper =  eventMapper;
+        this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping({"", "/"})
@@ -48,6 +52,16 @@ public class EventController {
         return new ResponseEntity<>(eventService.findById(id), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteById(@PathVariable UUID id) {
+        eventService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping({"", "/"})
+    public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
+        return new ResponseEntity<>(eventService.updateEvent(eventDTO), HttpStatus.OK);
+    }
 
     @PostMapping({"", "/"})
     public ResponseEntity<EventDTO> addEvent(@Valid @RequestBody EventDTO eventDTO) {

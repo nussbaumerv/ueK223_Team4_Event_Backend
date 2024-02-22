@@ -43,6 +43,16 @@ public class EventService {
         return eventMapper.toDTO(event);
     }
 
+    public EventDTO updateEvent(EventDTO eventDTO) {
+        Event event = eventMapper.fromDTO(eventDTO);
+        eventRepository.save(event);
+        return eventMapper.toDTO(event);
+    }
+
+    public void deleteById(UUID id) {
+        eventRepository.deleteById(id);
+    }
+
     public EventDTO addGuest(EventDTO eventDTO, UserDTO guestDTO) {
         Event event = eventMapper.fromDTO(eventDTO);
         User guest = userMapper.fromDTO(guestDTO);
