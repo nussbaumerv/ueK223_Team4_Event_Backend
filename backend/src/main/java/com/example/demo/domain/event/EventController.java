@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.dto.UserDTO;
+import com.example.demo.domain.user.dto.UserRegisterDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,22 @@ public class EventController {
     @GetMapping({"", "/"})
     public ResponseEntity<List<EventDTO>> retrieveAll() {
         return ResponseEntity.ok(eventService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EventDTO> retrieveById(@PathVariable UUID id) {
+        return new ResponseEntity<>(eventService.findById(id), HttpStatus.OK);
+    }
+
+
+    @PostMapping({"", "/"})
+    public ResponseEntity<EventDTO> addEvent(@Valid @RequestBody EventDTO eventDTO) {
+        return new ResponseEntity<>(eventService.addEvent(eventDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/guests/{id}")
+    public ResponseEntity<EventDTO> addGuest(@PathVariable UUID id, @Valid @RequestBody UserDTO userDTO) {
+        EventDTO eventDTO = eventService.findById(id);
+        return new ResponseEntity<>(eventService.addGuest(eventDTO, userDTO), HttpStatus.OK);
     }
 }

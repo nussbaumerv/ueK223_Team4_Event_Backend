@@ -35,5 +35,5 @@ VALUES ('d29e709c-0ff1-4f4c-a7ef-09f656c390f1', '2ebf301e-6c61-4076-98e3-2a38b31
  ON CONFLICT DO NOTHING;
 
 
-INSERT INTO event (id, name, date, location, description)
-VALUES ('af7c1fe6-d669-414e-b066-e9733f0de7a8', 'OAF', '1.1.2025', 'Frauenfeld', 'Cool event')  ON CONFLICT DO NOTHING;
+INSERT INTO event (id, name, date, location, description, owner_id)
+VALUES ('af7c1fe6-d669-414e-b066-e9733f0de7a8', 'OAF', '1.1.2025', 'Frauenfeld', 'Cool event', '0d8fa44c-54fd-4cd0-ace9-2a7da57992de')  ON CONFLICT DO NOTHING;

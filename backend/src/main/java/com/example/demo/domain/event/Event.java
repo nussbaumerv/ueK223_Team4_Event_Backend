@@ -3,6 +3,7 @@ package com.example.demo.domain.event;
 import com.example.demo.core.generic.AbstractEntity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import com.example.demo.domain.user.User;
@@ -33,11 +34,20 @@ public class   Event extends AbstractEntity {
     @Column
     private String description;
 
-    public Event(UUID id, String name, String date, String location, String description) {
+    @ManyToMany
+    private List<User> guests;
+
+    @ManyToOne
+    private User owner;
+
+
+    public Event(UUID id, String name, String date, String location, String description, List<User> guests, User owner) {
         super(id);
         this.name = name;
         this.date = date;
         this.location = location;
         this.description = description;
+        this.guests = guests;
+        this.owner = owner;
     }
 }
