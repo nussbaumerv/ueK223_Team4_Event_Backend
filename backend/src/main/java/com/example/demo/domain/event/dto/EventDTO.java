@@ -3,6 +3,7 @@ package com.example.demo.domain.event.dto;
 import com.example.demo.core.generic.AbstractDTO;
 import com.example.demo.domain.role.dto.RoleDTO;
 import com.example.demo.domain.user.User;
+import com.example.demo.domain.user.dto.MinimalUserDTO;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -30,10 +31,10 @@ public class EventDTO extends AbstractDTO {
 
     private String description;
 
-    private List<User> guests;
+    private List<MinimalUserDTO> guests;
 
-    private User owner;
-        public EventDTO(UUID id, String name, String date, String location, String description, List<User> guests, User owner) {
+    private MinimalUserDTO owner;
+        public EventDTO(UUID id, String name, String date, String location, String description, List<MinimalUserDTO> guests, MinimalUserDTO owner) {
             super(id);
             this.name = name;
             this.date = date;

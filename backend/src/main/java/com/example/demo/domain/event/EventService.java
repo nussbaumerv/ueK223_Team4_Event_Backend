@@ -4,12 +4,18 @@ import com.example.demo.domain.event.dto.EventDTO;
 import com.example.demo.domain.event.dto.EventMapper;
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserRepository;
+import com.example.demo.domain.user.dto.MinimalUserDTO;
 import com.example.demo.domain.user.dto.UserDTO;
 import com.example.demo.domain.user.dto.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +29,8 @@ public class EventService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     //TODO write CRUD Methods
 
@@ -35,6 +43,22 @@ public class EventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event not found with id: " + id));
         return eventMapper.toDTO(event);
+    }
+
+    public Page<UserDTO> findAllGuest(EventDTO eventDTO, Pageable pageable) {
+        List<User> guests = new ArrayList<>();
+
+        for (MinimalUserDTO guestDTO : eventDTO.getGuests()) {
+            User guest = userMapper.fromMinimalUserDTO(guestDTO);
+            guests.add(guest);
+        }
+
+        int pageSize = Math.min(1, pageable.getPageSize());
+        int pageBegin = (int) pageable.getOffset();
+        int pageEnd = Math.min(pageBegin + pageSize, guests.size());
+        List<User> subList = guests.subList(pageBegin, pageEnd);
+
+        return new PageImpl<>(userMapper.toDTOs(subList), pageable, guests.size());
     }
 
     public EventDTO addEvent(EventDTO eventDTO) {
