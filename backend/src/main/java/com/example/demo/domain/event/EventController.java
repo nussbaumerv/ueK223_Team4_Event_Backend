@@ -5,6 +5,7 @@ import com.example.demo.domain.event.dto.EventMapper;
 import java.util.List;
 import java.util.UUID;
 
+import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserService;
 import com.example.demo.domain.user.dto.MinimalUserDTO;
 import com.example.demo.domain.user.dto.UserDTO;
@@ -48,12 +49,14 @@ public class EventController {
 
     @GetMapping({"", "/"})
     public ResponseEntity<List<EventDTO>> retrieveAll() {
-        return ResponseEntity.ok(eventService.findAll());
+        List<Event> events = eventService.findAll();
+        return ResponseEntity.ok(eventMapper.toDTOs(events));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EventDTO> retrieveById(@PathVariable UUID id) {
-        return new ResponseEntity<>(eventService.findById(id), HttpStatus.OK);
+        Event event = eventService.findById(id);
+        return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -64,23 +67,25 @@ public class EventController {
 
     @PutMapping({"", "/"})
     public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
-        return new ResponseEntity<>(eventService.updateEvent(eventDTO), HttpStatus.OK);
+        Event event = eventService.updateEvent(eventMapper.fromDTO(eventDTO));
+        return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.OK);
     }
 
     @PostMapping({"", "/"})
     public ResponseEntity<EventDTO> addEvent(@Valid @RequestBody EventDTO eventDTO) {
-        return new ResponseEntity<>(eventService.addEvent(eventDTO), HttpStatus.CREATED);
+        Event event = eventService.addEvent(eventMapper.fromDTO(eventDTO));
+        return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.CREATED);
     }
 
-    @PutMapping("/guests/{id}")
-    public ResponseEntity<EventDTO> addGuest(@PathVariable UUID id, @Valid @RequestBody MinimalUserDTO minimalUserDTO) {
-        UserDTO userDTO = userMapper.toDTO(userMapper.fromMinimalUserDTO(minimalUserDTO));
-        EventDTO eventDTO = eventService.findById(id);
-        return new ResponseEntity<>(eventService.addGuest(eventDTO, userDTO), HttpStatus.OK);
+    @PutMapping("/{id}/guests/")
+    public ResponseEntity<EventDTO> addGuest(@PathVariable UUID id, @Valid @RequestBody UserDTO userDTO) {
+        Event event = eventService.addGuest(eventService.findById(id), userMapper.fromDTO(userDTO));
+        return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.OK);
     }
 
-    @GetMapping("/guests/{id}")
+    @GetMapping("/{id}/guests/")
     public ResponseEntity<Page<UserDTO>> retrieveAllGuests(@PathVariable UUID id, Pageable pageable) {
-        return new ResponseEntity<>(eventService.findAllGuest(eventService.findById(id), pageable), HttpStatus.OK);
+        Page<UserDTO> users = eventService.findAllGuest(id, pageable).map(userMapper::toDTO);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

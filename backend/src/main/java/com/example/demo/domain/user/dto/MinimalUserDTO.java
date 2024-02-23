@@ -18,14 +18,8 @@ import java.util.UUID;
 @Accessors(chain = true)
 public class MinimalUserDTO extends AbstractDTO {
 
-  private String firstName;
-
-  private String lastName;
-
-  public MinimalUserDTO(UUID id, String firstName, String lastName) {
+  public MinimalUserDTO(UUID id) {
     super(id);
-    this.firstName = firstName;
-    this.lastName = lastName;
   }
 
 }

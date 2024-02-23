@@ -4,6 +4,7 @@ import com.example.demo.domain.event.dto.EventDTO;
 import com.example.demo.domain.event.dto.EventMapper;
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserRepository;
+import com.example.demo.domain.user.UserService;
 import com.example.demo.domain.user.dto.MinimalUserDTO;
 import com.example.demo.domain.user.dto.UserDTO;
 import com.example.demo.domain.user.dto.UserMapper;
@@ -14,77 +15,64 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class EventService {
     @Autowired
     private EventRepository eventRepository;
-
     @Autowired
-    private EventMapper eventMapper;
-
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     //TODO write CRUD Methods
 
-    public List<EventDTO> findAll() {
-        List<Event> events = eventRepository.findAll();
-        return eventMapper.toDTOs(events);
+    public User convert(MinimalUserDTO minimalUserDTO){
+        UUID id = minimalUserDTO.getId();
+        return userService.findById(id);
+
     }
 
-    public EventDTO findById(UUID id) {
-        Event event = eventRepository.findById(id)
+    public List<Event> findAll() {
+        return eventRepository.findAll();
+    }
+
+    public Event findById(UUID id) {
+        return eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event not found with id: " + id));
-        return eventMapper.toDTO(event);
     }
 
-    public Page<UserDTO> findAllGuest(EventDTO eventDTO, Pageable pageable) {
-        List<User> guests = new ArrayList<>();
-
-        for (MinimalUserDTO guestDTO : eventDTO.getGuests()) {
-            User guest = userMapper.fromMinimalUserDTO(guestDTO);
-            guests.add(guest);
-        }
+    public Page<User> findAllGuest(UUID id, Pageable pageable) {
+        Optional<Event> event = eventRepository.findById(id);
+        List<User> guests = event.get().getGuests();
 
         int pageSize = Math.min(1, pageable.getPageSize());
         int pageBegin = (int) pageable.getOffset();
         int pageEnd = Math.min(pageBegin + pageSize, guests.size());
         List<User> subList = guests.subList(pageBegin, pageEnd);
 
-        return new PageImpl<>(userMapper.toDTOs(subList), pageable, guests.size());
+        return new PageImpl<>(subList, pageable, guests.size());
     }
 
-    public EventDTO addEvent(EventDTO eventDTO) {
-        Event event = eventMapper.fromDTO(eventDTO);
+    public Event addEvent(Event event) {
         eventRepository.save(event);
-        return eventMapper.toDTO(event);
+        return event;
     }
 
-    public EventDTO updateEvent(EventDTO eventDTO) {
-        Event event = eventMapper.fromDTO(eventDTO);
+    public Event updateEvent(Event event) {
         eventRepository.save(event);
-        return eventMapper.toDTO(event);
+        return event;
     }
 
     public void deleteById(UUID id) {
         eventRepository.deleteById(id);
     }
 
-    public EventDTO addGuest(EventDTO eventDTO, UserDTO guestDTO) {
-        Event event = eventMapper.fromDTO(eventDTO);
-        User guest = userMapper.fromDTO(guestDTO);
+    public Event addGuest(Event event, User guest) {
         List<User> guests = event.getGuests();
         guests.add(guest);
         event.setGuests(guests);
         eventRepository.save(event);
-        return eventMapper.toDTO(event);
+        return event;
     }
 
 }
