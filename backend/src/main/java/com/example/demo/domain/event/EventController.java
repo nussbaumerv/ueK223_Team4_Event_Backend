@@ -83,12 +83,8 @@ public class EventController {
     @PreAuthorize(" @eventPermissionEvaluator.isOwner(eventDTO, authentication.getPrincipal().user)")
     public ResponseEntity<EventDTO> updateEvent(@PathVariable UUID id, @Valid @RequestBody EventDTO eventDTO) {
         Event event = eventMapper.fromDTO(eventDTO);
-        if(event.getOwner().getId().equals(getRequestingUserId())) {
             Event updatedEvent = eventService.updateById(id, event);
             return new ResponseEntity<>(eventMapper.toDTO(updatedEvent), HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
     }
 
     @Operation(summary = "Add new event", description = "Adds a new event.")
