@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Validated
 @RestController
@@ -56,18 +57,21 @@ public class EventController {
         return currentUser.user().getId();
     }
 
+    @Operation(summary = "Retrieve all events", description = "Returns all events.")
     @GetMapping({"", "/"})
     public ResponseEntity<List<EventDTO>> retrieveAll() {
         List<Event> events = eventService.findAll();
         return ResponseEntity.ok(eventMapper.toDTOs(events));
     }
 
+    @Operation(summary = "Retrieve event by ID", description = "Returns a specific event by its unique ID.")
     @GetMapping("/{id}")
     public ResponseEntity<EventDTO> retrieveById(@PathVariable UUID id) {
         Event event = eventService.findById(id);
         return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.OK);
     }
 
+    @Operation(summary = "Delete event by ID", description = "Deletes a specific event by its unique ID.")
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteById(@PathVariable UUID id) {
         Event event = eventService.findById(id);
@@ -79,6 +83,7 @@ public class EventController {
         }
     }
 
+    @Operation(summary = "Update event", description = "Updates an existing event.")
     @PutMapping({"", "/"})
     public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
         Event event = eventMapper.fromDTO(eventDTO);
@@ -90,12 +95,14 @@ public class EventController {
         }
     }
 
+    @Operation(summary = "Add new event", description = "Adds a new event.")
     @PostMapping({"", "/"})
     public ResponseEntity<EventDTO> addEvent(@Valid @RequestBody EventDTO eventDTO) {
         Event event = eventService.addEvent(eventMapper.fromDTO(eventDTO));
         return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Add guest to event", description = "Adds a guest to a specific event.")
     @PutMapping("/{id}/guests/")
     public ResponseEntity<EventDTO> addGuest(@PathVariable UUID id, @Valid @RequestBody UserDTO userDTO) {
         Event event = eventService.findById(id);
@@ -110,6 +117,7 @@ public class EventController {
 
     }
 
+    @Operation(summary = "Retrieve all guests of an event", description = "Returns all guests of a specific event.")
     @GetMapping("/{id}/guests/")
     public ResponseEntity<Page<UserDTO>> retrieveAllGuests(@PathVariable UUID id, Pageable pageable) {
         Page<UserDTO> users = eventService.findAllGuest(id, pageable).map(userMapper::toDTO);
