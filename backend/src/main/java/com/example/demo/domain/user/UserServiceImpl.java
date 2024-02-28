@@ -10,10 +10,13 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class UserServiceImpl extends AbstractServiceImpl<User> implements UserService {
 
+  private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
   private final PasswordEncoder passwordEncoder;
 
   @Autowired
@@ -24,6 +27,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    log.info("Loading user by username: {}", email);
     return ((UserRepository) repository).findByEmail(email)
                                         .map(UserDetailsImpl::new)
                                         .orElseThrow(() -> new UsernameNotFoundException(email));
@@ -31,6 +35,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 
   @Override
   public User register(User user) {
+    log.info("Registering new user with email: {}", user.getEmail());
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     return save(user);
   }
