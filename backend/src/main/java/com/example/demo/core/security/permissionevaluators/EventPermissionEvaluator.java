@@ -1,9 +1,6 @@
 package com.example.demo.core.security.permissionevaluators;
 
-import com.example.demo.domain.event.EventController;
 import com.example.demo.domain.event.EventRepository;
-import com.example.demo.domain.event.dto.EventDTO;
-import com.example.demo.domain.event.dto.EventMapper;
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.dto.UserDTO;
 import com.example.demo.domain.user.dto.UserMapper;
@@ -26,7 +23,7 @@ public class EventPermissionEvaluator {
         return owner.getId().equals(requestingUser.getId());
     }
 
-    public boolean isGuestValid(UUID eventId, UserDTO guestDTO){
+    public boolean isGuestValid(UUID eventId, UserDTO guestDTO) {
         User guest = userMapper.fromDTO(guestDTO);
         return !guest.getRoles().contains("Admin") && !isOwner(eventId, guest);
     }

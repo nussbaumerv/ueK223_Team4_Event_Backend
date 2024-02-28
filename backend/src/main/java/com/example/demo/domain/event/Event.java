@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
-public class   Event extends AbstractEntity {
+public class Event extends AbstractEntity {
     @NotNull
     @Column
     private String name;

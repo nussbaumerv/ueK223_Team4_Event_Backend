@@ -20,12 +20,13 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
     private static final Logger log = LoggerFactory.getLogger(EventServiceImpl.class);
 
     @Autowired
-    public EventServiceImpl(EventRepository repository){
+    public EventServiceImpl(EventRepository repository) {
         super(repository);
     }
-@Override
+
+    @Override
     public Event addGuest(Event event, User guest) {
-    log.info("Adding guest {} to event {}", guest.getId(), event.getId());
+        log.info("Adding guest {} to event {}", guest.getId(), event.getId());
         List<User> guests = event.getGuests();
 
         if (guests.stream()
@@ -34,7 +35,7 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
             event.setGuests(guests);
             save(event);
         }
-    log.info("Guest {} is already added to event {}", guest.getId(), event.getId());
+        log.info("Guest {} is already added to event {}", guest.getId(), event.getId());
         return event;
     }
 
