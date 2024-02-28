@@ -28,13 +28,11 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
     log.info("Adding guest {} to event {}", guest.getId(), event.getId());
         List<User> guests = event.getGuests();
 
-
-        // Check if the guest is already in the list
         if (guests.stream()
                 .noneMatch(existingGuest -> existingGuest.getId().equals(guest.getId()))) {
             guests.add(guest);
             event.setGuests(guests);
-            return save(event);
+            save(event);
         }
     log.info("Guest {} is already added to event {}", guest.getId(), event.getId());
         return event;
