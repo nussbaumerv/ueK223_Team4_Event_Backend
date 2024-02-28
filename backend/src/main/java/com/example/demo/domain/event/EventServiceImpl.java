@@ -52,4 +52,16 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
 
         return new PageImpl<>(subList, pageable, guests.size());
     }
+
+    @Override
+    public void removeGuestFromAllEvents(User guest) {
+        findAll().stream()
+                .filter(event -> event.getGuests().contains(guest))
+                .forEach(event -> {
+                    List<User> guests = event.getGuests();
+                    guests.remove(guest);
+                    event.setGuests(guests);
+                    save(event);
+                });
+    }
 }

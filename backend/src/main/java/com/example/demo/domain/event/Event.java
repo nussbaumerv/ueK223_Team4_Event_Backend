@@ -34,6 +34,9 @@ public class Event extends AbstractEntity {
     private String description;
 
     @ManyToMany
+    @JoinTable(name = "event_guests",
+            joinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "guests_id", referencedColumnName = "id"))
     private List<User> guests;
 
     @ManyToOne

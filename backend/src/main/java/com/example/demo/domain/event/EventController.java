@@ -63,7 +63,7 @@ public class EventController {
     public ResponseEntity<HttpStatus> deleteById(@PathVariable UUID id) {
         log.info("Deleting event by ID: {}", id);
         eventService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "Update event", description = "Updates an existing event.")

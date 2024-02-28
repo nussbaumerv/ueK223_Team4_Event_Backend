@@ -21,6 +21,10 @@ INSERT INTO authority(id, name)
 VALUES ('2ebf301e-6c61-4076-98e3-2a38b31daf86', 'DEFAULT'),
        ('76d2cbf6-5845-470e-ad5f-2edb9e09a868', 'USER_MODIFY'),
        ('21c942db-a275-43f8-bdd6-d048c21bf5ab', 'USER_DELETE'),
+       ('b7bf613b-6619-4a72-abb6-5dc6734b9ae3', 'ADMIN_READ'),
+       ('5c6d5948-2c06-487c-bd3e-9ae23ded960b', 'ADMIN_CREATE'),
+       ('3b77df60-67df-4071-ac29-abbd451da1c5', 'ADMIN_MODIFY'),
+       ('e5a448e3-feaf-4535-9ac0-92b1471de468', 'ADMIN_DELETE'),
        ('d9b3a36d-4a52-4b08-8415-959a544b2996', 'PARTICIPATE_EVENT')
 ON CONFLICT DO NOTHING;
 
@@ -38,8 +42,13 @@ INSERT INTO role_authority(role_id, authority_id)
 VALUES ('d29e709c-0ff1-4f4c-a7ef-09f656c390f1', '2ebf301e-6c61-4076-98e3-2a38b31daf86'),
        ('ab505c92-7280-49fd-a7de-258e618df074', '76d2cbf6-5845-470e-ad5f-2edb9e09a868'),
        ('ab505c92-7280-49fd-a7de-258e618df074', '21c942db-a275-43f8-bdd6-d048c21bf5ab'),
+       ('ab505c92-7280-49fd-a7de-258e618df074', '3b77df60-67df-4071-ac29-abbd451da1c5'),
+       ('ab505c92-7280-49fd-a7de-258e618df074', 'e5a448e3-feaf-4535-9ac0-92b1471de468'),
+       ('ab505c92-7280-49fd-a7de-258e618df074', 'b7bf613b-6619-4a72-abb6-5dc6734b9ae3'),
+       ('ab505c92-7280-49fd-a7de-258e618df074', '5c6d5948-2c06-487c-bd3e-9ae23ded960b'),
        ('c6aee32d-8c35-4481-8b3e-a876a39b0c02', '21c942db-a275-43f8-bdd6-d048c21bf5ab'),
        ('c6aee32d-8c35-4481-8b3e-a876a39b0c02', 'd9b3a36d-4a52-4b08-8415-959a544b2996'),
+       ('c6aee32d-8c35-4481-8b3e-a876a39b0c02', '76d2cbf6-5845-470e-ad5f-2edb9e09a868'),
        ('d29e709c-0ff1-4f4c-a7ef-09f656c390f1', 'd9b3a36d-4a52-4b08-8415-959a544b2996')
 ON CONFLICT DO NOTHING;
 
