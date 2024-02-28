@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.example.demo.domain.user.User;
+import com.example.demo.domain.user.UserDetailsImpl;
 import com.example.demo.domain.user.UserService;
 import com.example.demo.domain.user.dto.MinimalUserDTO;
 import com.example.demo.domain.user.dto.UserDTO;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +50,12 @@ public class EventController {
         this.userMapper = userMapper;
     }
 
+    public UUID getRequestingUserId(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl currentUser = (UserDetailsImpl) authentication.getPrincipal();
+        return currentUser.user().getId();
+    }
+
     @GetMapping({"", "/"})
     public ResponseEntity<List<EventDTO>> retrieveAll() {
         List<Event> events = eventService.findAll();
@@ -61,14 +70,24 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteById(@PathVariable UUID id) {
-        eventService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Event event = eventService.findById(id);
+        if(event.getOwner().getId().equals(getRequestingUserId())) {
+            eventService.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
     @PutMapping({"", "/"})
     public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
-        Event event = eventService.updateEvent(eventMapper.fromDTO(eventDTO));
-        return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.OK);
+        Event event = eventMapper.fromDTO(eventDTO);
+        if(event.getOwner().getId().equals(getRequestingUserId())) {
+            Event updatedEvent = eventService.updateEvent(event);
+            return new ResponseEntity<>(eventMapper.toDTO(updatedEvent), HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
     @PostMapping({"", "/"})
@@ -79,8 +98,16 @@ public class EventController {
 
     @PutMapping("/{id}/guests/")
     public ResponseEntity<EventDTO> addGuest(@PathVariable UUID id, @Valid @RequestBody UserDTO userDTO) {
-        Event event = eventService.addGuest(eventService.findById(id), userMapper.fromDTO(userDTO));
-        return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.OK);
+        Event event = eventService.findById(id);
+        User newGuest = userMapper.fromDTO(userDTO);
+        if(event.getOwner().getId().equals(getRequestingUserId()) && !newGuest.getRoles().contains("Admin") && !event.getOwner().getId().equals(newGuest.getId())) {
+            Event eventUpdated = eventService.addGuest(eventService.findById(id), newGuest);
+            return new ResponseEntity<>(eventMapper.toDTO(eventUpdated), HttpStatus.OK);
+        } else{
+            System.out.println(newGuest.getRoles() + " / " + getRequestingUserId() + " / " + event.getOwner().getEmail());
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
     }
 
     @GetMapping("/{id}/guests/")

@@ -69,9 +69,14 @@ public class EventService {
 
     public Event addGuest(Event event, User guest) {
         List<User> guests = event.getGuests();
-        guests.add(guest);
-        event.setGuests(guests);
-        eventRepository.save(event);
+
+        // Check if the guest is already in the list
+        if (!guests.contains(guest)) {
+            guests.add(guest);
+            event.setGuests(guests);
+            eventRepository.save(event);
+            System.out.println("happend");
+        }
         return event;
     }
 
