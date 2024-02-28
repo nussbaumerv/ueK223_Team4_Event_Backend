@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
@@ -25,6 +27,7 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public Event addGuest(Event event, User guest) {
         log.info("Adding guest {} to event {}", guest.getId(), event.getId());
         List<User> guests = event.getGuests();
@@ -54,6 +57,7 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public void removeGuestFromAllEvents(User guest) {
         findAll().stream()
                 .filter(event -> event.getGuests().contains(guest))

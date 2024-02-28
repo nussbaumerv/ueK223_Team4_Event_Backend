@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name = "event")
@@ -39,7 +40,7 @@ public class Event extends AbstractEntity {
             inverseJoinColumns = @JoinColumn(name = "guests_id", referencedColumnName = "id"))
     private List<User> guests;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private User owner;
 
 
