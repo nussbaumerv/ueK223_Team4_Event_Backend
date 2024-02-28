@@ -2,6 +2,7 @@ package com.example.demo.domain.event;
 
 import com.example.demo.domain.event.dto.EventDTO;
 import com.example.demo.domain.event.dto.EventMapper;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -43,7 +44,7 @@ public class EventController {
         this.userMapper = userMapper;
     }
 
-    public UUID getRequestingUserId(){
+    public UUID getRequestingUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl currentUser = (UserDetailsImpl) authentication.getPrincipal();
         return currentUser.user().getId();
@@ -67,20 +68,16 @@ public class EventController {
 
     @Operation(summary = "Delete event by ID", description = "Deletes a specific event by its unique ID.")
     @DeleteMapping("/{id}")
+    @PreAuthorize(" @eventPermissionEvaluator.isOwner(#id, authentication.getPrincipal().user)")
     public ResponseEntity<HttpStatus> deleteById(@PathVariable UUID id) {
         log.info("Deleting event by ID: {}", id);
-        Event event = eventService.findById(id);
-        if(event.getOwner().getId().equals(getRequestingUserId())) {
-            eventService.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        eventService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "Update event", description = "Updates an existing event.")
-    @PutMapping({ "/id"})
-    @PreAuthorize(" @eventPermissionEvaluator.isOwner(eventDTO, authentication.getPrincipal().user)")
+    @PutMapping("/{id}")
+    @PreAuthorize(" @eventPermissionEvaluator.isOwner(#id, authentication.getPrincipal().user)")
     public ResponseEntity<EventDTO> updateEvent(@PathVariable UUID id, @Valid @RequestBody EventDTO eventDTO) {
         log.info("Updating event with ID: {}", id);
         Event event = eventMapper.fromDTO(eventDTO);
@@ -98,17 +95,12 @@ public class EventController {
 
     @Operation(summary = "Add guest to event", description = "Adds a guest to a specific event.")
     @PutMapping("/{id}/guests/")
+    @PreAuthorize(" @eventPermissionEvaluator.isOwner(#id, authentication.getPrincipal().user) && @eventPermissionEvaluator.isGuestValid(#id, #userDTO)")
     public ResponseEntity<EventDTO> addGuest(@PathVariable UUID id, @Valid @RequestBody UserDTO userDTO) {
         log.info("Adding guest to event with ID: {}", id);
-        Event event = eventService.findById(id);
         User newGuest = userMapper.fromDTO(userDTO);
-        if(event.getOwner().getId().equals(getRequestingUserId()) && !newGuest.getRoles().contains("Admin") && !event.getOwner().getId().equals(newGuest.getId())) {
-            Event eventUpdated = eventService.addGuest(eventService.findById(id), newGuest);
-            return new ResponseEntity<>(eventMapper.toDTO(eventUpdated), HttpStatus.OK);
-        } else{
-            System.out.println(newGuest.getRoles() + " / " + getRequestingUserId() + " / " + event.getOwner().getEmail());
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        Event eventUpdated = eventService.addGuest(eventService.findById(id), newGuest);
+        return new ResponseEntity<>(eventMapper.toDTO(eventUpdated), HttpStatus.OK);
     }
 
     @Operation(summary = "Retrieve all guests of an event", description = "Returns all guests of a specific event.")
