@@ -34,8 +34,9 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
             guests.add(guest);
             event.setGuests(guests);
             save(event);
+        } else {
+            log.info("Guest {} is already added to event {}", guest.getId(), event.getId());
         }
-        log.info("Guest {} is already added to event {}", guest.getId(), event.getId());
         return event;
     }
 

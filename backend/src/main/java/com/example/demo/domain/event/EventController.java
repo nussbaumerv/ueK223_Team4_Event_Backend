@@ -44,12 +44,6 @@ public class EventController {
         this.userMapper = userMapper;
     }
 
-    public UUID getRequestingUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl currentUser = (UserDetailsImpl) authentication.getPrincipal();
-        return currentUser.user().getId();
-    }
-
     @Operation(summary = "Retrieve all events", description = "Returns all events.")
     @GetMapping({"", "/"})
     public ResponseEntity<List<EventDTO>> retrieveAll() {
@@ -95,7 +89,7 @@ public class EventController {
 
     @Operation(summary = "Add guest to event", description = "Adds a guest to a specific event.")
     @PutMapping("/{id}/guests/")
-    @PreAuthorize(" @eventPermissionEvaluator.isOwner(#id, authentication.getPrincipal().user) && @eventPermissionEvaluator.isGuestValid(#id, #userDTO)")
+    @PreAuthorize("@eventPermissionEvaluator.isOwner(#id, authentication.getPrincipal().user) && @eventPermissionEvaluator.isGuestValid(#id, #userDTO)")
     public ResponseEntity<EventDTO> addGuest(@PathVariable UUID id, @Valid @RequestBody UserDTO userDTO) {
         log.info("Adding guest to event with ID: {}", id);
         User newGuest = userMapper.fromDTO(userDTO);
