@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.webjars.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,8 +29,7 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
         log.info("Adding guest {} to event {}", guest.getId(), event.getId());
         List<User> guests = event.getGuests();
 
-        if (guests.stream()
-                .noneMatch(existingGuest -> existingGuest.getId().equals(guest.getId()))) {
+        if (guests.stream().noneMatch(existingGuest -> existingGuest.getId().equals(guest.getId()))) {
             guests.add(guest);
             event.setGuests(guests);
             save(event);
@@ -43,8 +42,8 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
     @Override
     public Page<User> findAllGuest(UUID id, Pageable pageable) {
         log.info("Retrieving all guests of event with ID: {}", id);
-        Optional<Event> event = repository.findById(id);
-        List<User> guests = event.get().getGuests();
+        Event event = repository.findById(id).orElseThrow(() -> new NotFoundException("Event with id: " + id + " not found"));
+        List<User> guests = event.getGuests();
 
         int pageSize = Math.min(1, pageable.getPageSize());
         int pageBegin = (int) pageable.getOffset();

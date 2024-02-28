@@ -1,16 +1,12 @@
 package com.example.demo.core.security.permissionevaluators;
 
-import com.example.demo.domain.authority.Authority;
-import com.example.demo.domain.event.EventRepository;
 import com.example.demo.domain.event.EventService;
-import com.example.demo.domain.role.Role;
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserService;
 import com.example.demo.domain.user.dto.UserDTO;
 import com.example.demo.domain.user.dto.UserMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Component
