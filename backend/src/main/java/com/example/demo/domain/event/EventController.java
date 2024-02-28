@@ -7,8 +7,6 @@ import java.util.UUID;
 
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.UserDetailsImpl;
-import com.example.demo.domain.user.UserService;
-import com.example.demo.domain.user.dto.MinimalUserDTO;
 import com.example.demo.domain.user.dto.UserDTO;
 import com.example.demo.domain.user.dto.UserMapper;
 import jakarta.validation.Valid;
@@ -38,16 +36,13 @@ public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
 
-    private final UserService userService;
-
     private final UserMapper userMapper;
 
 
     @Autowired
-    public EventController(EventService eventService, EventMapper eventMapper, UserService userService, UserMapper userMapper) {
+    public EventController(EventService eventService, EventMapper eventMapper, UserMapper userMapper) {
         this.eventService = eventService;
         this.eventMapper =  eventMapper;
-        this.userService = userService;
         this.userMapper = userMapper;
     }
 
@@ -84,11 +79,12 @@ public class EventController {
     }
 
     @Operation(summary = "Update event", description = "Updates an existing event.")
-    @PutMapping({"", "/"})
-    public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
+    @PutMapping({ "/id"})
+    @PreAuthorize(" @eventPermissionEvaluator.isOwner(eventDTO, authentication.getPrincipal().user)")
+    public ResponseEntity<EventDTO> updateEvent(@PathVariable UUID id, @Valid @RequestBody EventDTO eventDTO) {
         Event event = eventMapper.fromDTO(eventDTO);
         if(event.getOwner().getId().equals(getRequestingUserId())) {
-            Event updatedEvent = eventService.updateEvent(event);
+            Event updatedEvent = eventService.updateById(id, event);
             return new ResponseEntity<>(eventMapper.toDTO(updatedEvent), HttpStatus.OK);
         } else{
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -98,7 +94,7 @@ public class EventController {
     @Operation(summary = "Add new event", description = "Adds a new event.")
     @PostMapping({"", "/"})
     public ResponseEntity<EventDTO> addEvent(@Valid @RequestBody EventDTO eventDTO) {
-        Event event = eventService.addEvent(eventMapper.fromDTO(eventDTO));
+        Event event = eventService.save(eventMapper.fromDTO(eventDTO));
         return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.CREATED);
     }
 

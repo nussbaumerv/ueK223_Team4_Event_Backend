@@ -2,7 +2,6 @@ package com.example.demo.domain.event;
 
 import com.example.demo.core.generic.AbstractEntity;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
