@@ -1,0 +1,431 @@
+{
+	"info": {
+		"_postman_id": "959a1f3a-77fb-4be2-bcee-e3418a034d17",
+		"name": "uek223_event",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26872192",
+		"_collection_link": "https://bold-capsule-134015.postman.co/workspace/New-Team-Workspace~07be0b74-da01-4e52-aca9-3cffa80389d8/collection/26872192-959a1f3a-77fb-4be2-bcee-e3418a034d17?action=share&source=collection_link&creator=26872192"
+	},
+	"item": [
+		{
+			"name": "Add Event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Guests array is present in the response\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.have.property('guests').that.is.an('array');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Owner object should exist with valid properties\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.owner).to.exist;",
+							"  pm.expect(responseData.owner).to.be.an('object');",
+							"  pm.expect(responseData.owner.id).to.exist;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"pm.test(\"Status code name has string\", function () {",
+							"    pm.response.to.have.status(\"Created\");",
+							"});",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Ilija Admin Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"ILIJA\",\r\n        \"date\": \"1.1.2025\",\r\n        \"location\": \"Zurich\",\r\n        \"description\": \"Cool event\",\r\n        \"guests\": [],\r\n        \"owner\": {\r\n    \"id\": \"ba804cb9-fa14-42a5-afaf-be488742fc54\",\r\n    \"firstName\": \"James\",\r\n    \"lastName\": \"Bond\",\r\n    \"email\": \"admin@example.com\",\r\n    \"roles\": [\r\n        {\r\n            \"id\": \"d29e709c-0ff1-4f4c-a7ef-09f656c390f1\",\r\n            \"name\": \"DEFAULT\",\r\n            \"authorities\": [\r\n                {\r\n                    \"id\": \"2ebf301e-6c61-4076-98e3-2a38b31daf86\",\r\n                    \"name\": \"DEFAULT\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"c6aee32d-8c35-4481-8b3e-a876a39b0c02\",\r\n            \"name\": \"USER\",\r\n            \"authorities\": [\r\n                {\r\n                    \"id\": \"21c942db-a275-43f8-bdd6-d048c21bf5ab\",\r\n                    \"name\": \"USER_DELETE\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"ab505c92-7280-49fd-a7de-258e618df074\",\r\n            \"name\": \"ADMIN\",\r\n            \"authorities\": [\r\n                {\r\n                    \"id\": \"76d2cbf6-5845-470e-ad5f-2edb9e09a868\",\r\n                    \"name\": \"USER_MODIFY\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/event/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Ilija Admin Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"ZOAF\",\r\n        \"date\": \"1.1.2026\",\r\n        \"location\": \"Zurich\",\r\n        \"description\": \"Cool event\",\r\n        \"guests\": [],\r\n        \"owner\": {\r\n            \"id\": \"0d8fa44c-54fd-4cd0-ace9-2a7da57992de\",\r\n            \"firstName\": \"Tyler\",\r\n            \"lastName\": \"Durden\",\r\n            \"email\": \"user@example.com\",\r\n            \"password\": \"$2a$10$TM3PAYG3b.H98cbRrHqWa.BM7YyCqV92e/kUTBfj85AjayxGZU7d6\",\r\n            \"roles\": [\r\n                {\r\n                    \"id\": \"d29e709c-0ff1-4f4c-a7ef-09f656c390f1\",\r\n                    \"name\": \"DEFAULT\",\r\n                    \"authorities\": [\r\n                        {\r\n                            \"id\": \"2ebf301e-6c61-4076-98e3-2a38b31daf86\",\r\n                            \"name\": \"DEFAULT\"\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/event",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Guests",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response contains the 'content' array\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.content).to.exist.and.to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Ilija Admin Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/event/af7c1fe6-d669-414e-b066-e9733f0de7a8/guests/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event",
+						"af7c1fe6-d669-414e-b066-e9733f0de7a8",
+						"guests",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Events",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Guests array should exist and be an array\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    pm.expect(responseData[0].guests).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Each guest in the array should have an id property\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    responseData[0].guests.forEach(function(guest) {",
+							"        pm.expect(guest.id).to.exist;",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Owner object and its properties are valid\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+							"    ",
+							"    responseData.forEach(event => {",
+							"        pm.expect(event.owner).to.be.an('object').that.is.not.empty;",
+							"        pm.expect(event.owner.id).to.exist.and.to.be.a('string');",
+							"    });",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Ilija Admin Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/event",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Event by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Guests array should contain at least one element\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.guests).to.be.an('array').that.is.not.empty;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Owner object contains an id\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.owner.id).to.exist;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Ilija Admin Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/event/af7c1fe6-d669-414e-b066-e9733f0de7a8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event",
+						"af7c1fe6-d669-414e-b066-e9733f0de7a8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Ilija Admin Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/event/0f959bcc-7425-40d1-8060-eff08bbfb0a5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event",
+						"0f959bcc-7425-40d1-8060-eff08bbfb0a5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

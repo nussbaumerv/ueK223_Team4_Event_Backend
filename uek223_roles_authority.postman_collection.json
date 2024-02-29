@@ -1,0 +1,300 @@
+{
+	"info": {
+		"_postman_id": "795bf1c9-f368-4cfb-857e-a3efc91711bb",
+		"name": "uek223_roles_authority",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26872192",
+		"_collection_link": "https://bold-capsule-134015.postman.co/workspace/New-Team-Workspace~07be0b74-da01-4e52-aca9-3cffa80389d8/collection/26872192-795bf1c9-f368-4cfb-857e-a3efc91711bb?action=share&source=collection_link&creator=26872192"
+	},
+	"item": [
+		{
+			"name": "Create User (Admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 201\", function () {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"",
+							"pm.test(\"Owner's id is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  pm.expect(responseData.owner.id).to.be.a('string').and.to.have.length.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Guests array is present and empty\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.guests).to.exist.and.to.be.an('array').that.is.empty;",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Ilija Admin Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"ZOAF\",\r\n        \"date\": \"1.1.2025\",\r\n        \"location\": \"Zurich\",\r\n        \"description\": \"Cool event\",\r\n        \"guests\": [],\r\n        \"owner\": {\r\n            \"id\": \"0d8fa44c-54fd-4cd0-ace9-2a7da57992de\",\r\n            \"firstName\": \"Tyler\",\r\n            \"lastName\": \"Durden\",\r\n            \"email\": \"user@example.com\",\r\n            \"password\": \"$2a$10$TM3PAYG3b.H98cbRrHqWa.BM7YyCqV92e/kUTBfj85AjayxGZU7d6\",\r\n            \"roles\": [\r\n                {\r\n                    \"id\": \"d29e709c-0ff1-4f4c-a7ef-09f656c390f1\",\r\n                    \"name\": \"DEFAULT\",\r\n                    \"authorities\": [\r\n                        {\r\n                            \"id\": \"2ebf301e-6c61-4076-98e3-2a38b31daf86\",\r\n                            \"name\": \"DEFAULT\"\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/event/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (Admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"  pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the response Content-Type is application/json\", function () {\r",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.id).to.exist;\r",
+							"  pm.expect(responseData.firstName).to.exist;\r",
+							"  pm.expect(responseData.lastName).to.exist;\r",
+							"  pm.expect(responseData.email).to.exist;\r",
+							"  pm.expect(responseData.roles).to.exist;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{NUSSV Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"id\": \"f9ed81db-f90a-42d4-b7e4-d554d8f338fd\",\r\n            \"firstName\": \"Valentin\",\r\n            \"lastName\": \"Nussbaumer\",\r\n            \"email\": \"nussbaumerv9@gmail.com\",\r\n            \"roles\": [\r\n                {\r\n                    \"id\": \"c6aee32d-8c35-4481-8b3e-a876a39b0c02\",\r\n                    \"name\": \"USER\",\r\n                    \"authorities\": [\r\n                        {\r\n                            \"id\": \"d9b3a36d-4a52-4b08-8415-959a544b2996\",\r\n                            \"name\": \"PARTICIPATE_EVENT\"\r\n                        },\r\n                        {\r\n                            \"id\": \"76d2cbf6-5845-470e-ad5f-2edb9e09a868\",\r\n                            \"name\": \"USER_MODIFY\"\r\n                        },\r\n                        {\r\n                            \"id\": \"21c942db-a275-43f8-bdd6-d048c21bf5ab\",\r\n                            \"name\": \"USER_DELETE\"\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"id\": \"d29e709c-0ff1-4f4c-a7ef-09f656c390f1\",\r\n                    \"name\": \"DEFAULT\",\r\n                    \"authorities\": [\r\n                        {\r\n                            \"id\": \"d9b3a36d-4a52-4b08-8415-959a544b2996\",\r\n                            \"name\": \"PARTICIPATE_EVENT\"\r\n                        },\r\n                        {\r\n                            \"id\": \"2ebf301e-6c61-4076-98e3-2a38b31daf86\",\r\n                            \"name\": \"DEFAULT\"\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/f9ed81db-f90a-42d4-b7e4-d554d8f338fd",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"f9ed81db-f90a-42d4-b7e4-d554d8f338fd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User (Admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"pm.test(\"Successful DELETE request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT 23.2 VN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/event/a87e292a-b041-4dd1-bd73-68f39ff09b2a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event",
+						"a87e292a-b041-4dd1-bd73-68f39ff09b2a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Guests (Admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content array is present and contains at least one element\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.content).to.exist.and.to.be.an('array').that.is.not.empty;",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Ilija Admin Key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/event/af7c1fe6-d669-414e-b066-e9733f0de7a8/guests/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event",
+						"af7c1fe6-d669-414e-b066-e9733f0de7a8",
+						"guests",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Own User Info (User)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{JWT 23.2 VN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/event/guests/af7c1fe6-d669-414e-b066-e9733f0de7a8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"event",
+						"guests",
+						"af7c1fe6-d669-414e-b066-e9733f0de7a8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
