@@ -1,4 +1,5 @@
 # README #
+Repository of frontend: https://github.com/duyminh-nguyen/ueK223_Team4_Event_Frontend
 
 ## Starter Project Spring Boot
 
