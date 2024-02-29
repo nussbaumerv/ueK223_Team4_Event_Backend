@@ -41,8 +41,10 @@ public class Event extends AbstractEntity {
             inverseJoinColumns = @JoinColumn(name = "guests_id", referencedColumnName = "id"))
     private List<User> guests;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     private User owner;
+
+
 
 
     public Event(UUID id, String name, String date, String location, String description, List<User> guests, User owner) {

@@ -2,10 +2,14 @@ package com.example.demo.domain.event;
 
 import com.example.demo.core.generic.AbstractServiceImpl;
 import com.example.demo.domain.user.User;
+import com.example.demo.domain.user.UserDetailsImpl;
+import com.example.demo.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +19,19 @@ import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class EventServiceImpl extends AbstractServiceImpl<Event> implements EventService {
 
     private static final Logger log = LoggerFactory.getLogger(EventServiceImpl.class);
+    private final UserRepository userRepository;
 
     @Autowired
-    public EventServiceImpl(EventRepository repository) {
+    public EventServiceImpl(EventRepository repository,
+                            UserRepository userRepository) {
         super(repository);
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -61,6 +69,12 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
     public void removeUserFromAllEvents(User guest) {
         log.debug("Removing guest from all events with ID: {}", guest.getId());
         //Remove user from all events where in guests
+      /*  ((EventRepository) repository).findByGuests_Id(guest.getId()).stream().forEach(user -> {
+            List<User> guests = event.getGuests();
+            guests.remove(guest);
+            event.setGuests(guests);
+            save(event);
+        }); */
         findAll().stream()
                 .filter(event -> event.getGuests().contains(guest))
                 .forEach(event -> {
@@ -75,5 +89,18 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
                 .forEach(event -> {
                     event.setOwner(null);
                 });
+    }
+
+    @Override
+    public List<User> findAllPossibleGuests() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl requestingUserImpl = (UserDetailsImpl) authentication.getPrincipal();
+        User requestingUser = requestingUserImpl.user();
+
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().stream()
+                        .anyMatch(role -> role.getAuthorities().stream().anyMatch(authority -> authority.getName().equals("PARTICIPATE_EVENT"))))
+                .filter(user -> !user.getId().equals(requestingUser.getId()))
+                .collect(Collectors.toList());
     }
 }

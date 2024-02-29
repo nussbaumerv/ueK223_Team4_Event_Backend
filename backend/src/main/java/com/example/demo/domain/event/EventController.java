@@ -5,6 +5,7 @@ import com.example.demo.domain.event.dto.EventMapper;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.example.demo.domain.user.User;
 import com.example.demo.domain.user.dto.UserDTO;
@@ -99,6 +100,14 @@ public class EventController {
     public ResponseEntity<Page<UserDTO>> retrieveAllGuests(@PathVariable UUID id, Pageable pageable) {
         log.debug("Retrieving all guests of event with ID: {}", id);
         Page<UserDTO> users = eventService.findAllGuest(id, pageable).map(userMapper::toDTO);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Retrieve all possible", description = "Returns all possible guests to add to a event")
+    @GetMapping("/guests/available")
+    public ResponseEntity<List<UserDTO>> retrieveAllPossibleGuests() {
+        log.debug("Retrieving all guests of event with ID");
+        List<UserDTO> users = eventService.findAllPossibleGuests().stream().map(userMapper::toDTO).collect(Collectors.toList());
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

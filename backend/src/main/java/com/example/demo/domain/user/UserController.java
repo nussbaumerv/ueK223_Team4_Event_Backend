@@ -89,7 +89,6 @@ public class UserController {
         User user = userService.updateById(id, userMapper.fromDTO(userDTO));
         return new ResponseEntity<>(userMapper.toDTO(user), HttpStatus.OK);
     }
-    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     @Operation(summary = "Delete user by ID", description = "Deletes a specific user by its unique ID.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('USER_DELETE') && (hasAuthority('ADMIN_DELETE') || @userPermissionEvaluator.isOwner(authentication.principal.user, #id))")
