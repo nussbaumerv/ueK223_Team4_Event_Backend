@@ -44,7 +44,7 @@ public class EventController {
     @Operation(summary = "Retrieve all events", description = "Returns all events.")
     @GetMapping({"", "/"})
     public ResponseEntity<List<EventDTO>> retrieveAll() {
-        log.info("Retrieving all events.");
+        log.debug("Retrieving all events.");
         List<Event> events = eventService.findAll();
         return ResponseEntity.ok(eventMapper.toDTOs(events));
     }
@@ -52,7 +52,7 @@ public class EventController {
     @Operation(summary = "Retrieve event by ID", description = "Returns a specific event by its unique ID.")
     @GetMapping("/{id}")
     public ResponseEntity<EventDTO> retrieveById(@PathVariable UUID id) {
-        log.info("Retrieving event by ID: {}", id);
+        log.debug("Retrieving event by ID: {}", id);
         Event event = eventService.findById(id);
         return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.OK);
     }
@@ -61,7 +61,7 @@ public class EventController {
     @DeleteMapping("/{id}")
     @PreAuthorize(" @eventPermissionEvaluator.isOwner(#id, authentication.getPrincipal().user)")
     public ResponseEntity<HttpStatus> deleteById(@PathVariable UUID id) {
-        log.info("Deleting event by ID: {}", id);
+        log.debug("Deleting event by ID: {}", id);
         eventService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -70,7 +70,7 @@ public class EventController {
     @PutMapping("/{id}")
     @PreAuthorize(" @eventPermissionEvaluator.isOwner(#id, authentication.getPrincipal().user)")
     public ResponseEntity<EventDTO> updateEvent(@PathVariable UUID id, @Valid @RequestBody EventDTO eventDTO) {
-        log.info("Updating event with ID: {}", id);
+        log.debug("Updating event with ID: {}", id);
         Event event = eventMapper.fromDTO(eventDTO);
         Event updatedEvent = eventService.updateById(id, event);
         return new ResponseEntity<>(eventMapper.toDTO(updatedEvent), HttpStatus.OK);
@@ -79,7 +79,7 @@ public class EventController {
     @Operation(summary = "Add new event", description = "Adds a new event.")
     @PostMapping({"", "/"})
     public ResponseEntity<EventDTO> addEvent(@Valid @RequestBody EventDTO eventDTO) {
-        log.info("Adding a new event.");
+        log.debug("Adding a new event.");
         Event event = eventService.save(eventMapper.fromDTO(eventDTO));
         return new ResponseEntity<>(eventMapper.toDTO(event), HttpStatus.CREATED);
     }
@@ -88,7 +88,7 @@ public class EventController {
     @PutMapping("/{id}/guests/")
     @PreAuthorize("@eventPermissionEvaluator.isOwner(#id, authentication.getPrincipal().user) && @eventPermissionEvaluator.isGuestValid(#id, #userDTO)")
     public ResponseEntity<EventDTO> addGuest(@PathVariable UUID id, @Valid @RequestBody UserDTO userDTO) {
-        log.info("Adding guest to event with ID: {}", id);
+        log.debug("Adding guest to event with ID: {}", id);
         User newGuest = userMapper.fromDTO(userDTO);
         Event eventUpdated = eventService.addGuest(eventService.findById(id), newGuest);
         return new ResponseEntity<>(eventMapper.toDTO(eventUpdated), HttpStatus.OK);
@@ -97,7 +97,7 @@ public class EventController {
     @Operation(summary = "Retrieve all guests of an event", description = "Returns all guests of a specific event.")
     @GetMapping("/{id}/guests/")
     public ResponseEntity<Page<UserDTO>> retrieveAllGuests(@PathVariable UUID id, Pageable pageable) {
-        log.info("Retrieving all guests of event with ID: {}", id);
+        log.debug("Retrieving all guests of event with ID: {}", id);
         Page<UserDTO> users = eventService.findAllGuest(id, pageable).map(userMapper::toDTO);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }

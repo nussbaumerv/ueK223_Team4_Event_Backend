@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface EventService extends AbstractService<Event> {
     Event addGuest(Event event, User guest);
     Page<User> findAllGuest(UUID id, Pageable pageable);
-    void removeGuestFromAllEvents(User guest);
+    void removeUserFromAllEvents(User guest);
 }

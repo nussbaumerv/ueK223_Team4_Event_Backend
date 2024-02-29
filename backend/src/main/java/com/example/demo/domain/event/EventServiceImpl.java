@@ -29,7 +29,7 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public Event addGuest(Event event, User guest) {
-        log.info("Adding guest {} to event {}", guest.getId(), event.getId());
+        log.debug("Adding guest {} to event {}", guest.getId(), event.getId());
         List<User> guests = event.getGuests();
 
         if (guests.stream().noneMatch(existingGuest -> existingGuest.getId().equals(guest.getId()))) {
@@ -44,7 +44,7 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
 
     @Override
     public Page<User> findAllGuest(UUID id, Pageable pageable) {
-        log.info("Retrieving all guests of event with ID: {}", id);
+        log.debug("Retrieving all guests of event with ID: {}", id);
 
         Event event = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event with id: " + id + " not found"));
@@ -58,7 +58,9 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
 
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
-    public void removeGuestFromAllEvents(User guest) {
+    public void removeUserFromAllEvents(User guest) {
+        log.debug("Removing guest from all events with ID: {}", guest.getId());
+        //Remove user from all events where in guests
         findAll().stream()
                 .filter(event -> event.getGuests().contains(guest))
                 .forEach(event -> {
@@ -66,6 +68,12 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
                     guests.remove(guest);
                     event.setGuests(guests);
                     save(event);
+                });
+
+        //Remove user from all events where owner
+        findAll().stream().filter(event -> event.getOwner().equals(guest))
+                .forEach(event -> {
+                    event.setOwner(null);
                 });
     }
 }

@@ -6,10 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.security.SecureRandom;
-import java.util.Random;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +23,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    log.info("Loading user by username: {}", email);
+    log.debug("Loading user by username: {}", email);
     return ((UserRepository) repository).findByEmail(email)
                                         .map(UserDetailsImpl::new)
                                         .orElseThrow(() -> new UsernameNotFoundException(email));
@@ -35,7 +31,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 
   @Override
   public User register(User user) {
-    log.info("Registering new user with email: {}", user.getEmail());
+    log.debug("Registering new user with email: {}", user.getEmail());
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     return save(user);
   }
@@ -44,12 +40,6 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
   public User registerUser(User user){
     user.setPassword(passwordEncoder.encode("1234"));
     return save(user);
-  }
-
-  public Stream<Character> getRandomSpecialChars(int count) {
-    Random random = new SecureRandom();
-    IntStream specialChars = random.ints(count, 33, 45);
-    return specialChars.mapToObj(data -> (char) data);
   }
 
 }

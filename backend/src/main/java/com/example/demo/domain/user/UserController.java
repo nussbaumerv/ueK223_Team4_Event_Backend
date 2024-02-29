@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,7 +50,7 @@ public class UserController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN_READ') || @userPermissionEvaluator.isOwner(authentication.principal.user, #id)")
     public ResponseEntity<UserDTO> retrieveById(@PathVariable UUID id) {
-        log.info("Retrieve user by ID endpoint called. ID: {}", id);
+        log.debug("Retrieve user by ID endpoint called. ID: {}", id);
         User user = userService.findById(id);
         return new ResponseEntity<>(userMapper.toDTO(user), HttpStatus.OK);
     }
@@ -58,7 +59,7 @@ public class UserController {
     @GetMapping({"", "/"})
     @PreAuthorize("hasAuthority('ADMIN_READ')")
     public ResponseEntity<List<UserDTO>> retrieveAll() {
-        log.info("Retrieve all users endpoint called.");
+        log.debug("Retrieve all users endpoint called.");
         List<User> users = userService.findAll();
         return new ResponseEntity<>(userMapper.toDTOs(users), HttpStatus.OK);
     }
@@ -66,7 +67,7 @@ public class UserController {
     @Operation(summary = "Register a new user", description = "Registers a new user.")
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
-        log.info("Register new user endpoint called.");
+        log.debug("Register new user endpoint called.");
         User user = userService.register(userMapper.fromUserRegisterDTO(userRegisterDTO));
         return new ResponseEntity<>(userMapper.toDTO(user), HttpStatus.CREATED);
     }
@@ -75,7 +76,7 @@ public class UserController {
     @PostMapping("/registerUser")
     @PreAuthorize("hasAuthority('ADMIN_CREATE')")
     public ResponseEntity<UserDTO> registerWithoutPassword(@Valid @RequestBody UserDTO userDTO) {
-        log.info("Register new user without password endpoint called.");
+        log.debug("Register new user without password endpoint called.");
         User user = userService.registerUser(userMapper.fromDTO(userDTO));
         return new ResponseEntity<>(userMapper.toDTO(user), HttpStatus.CREATED);
     }
@@ -84,17 +85,17 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('USER_MODIFY') && (hasAuthority('ADMIN_MODIFY') || @userPermissionEvaluator.isOwner(authentication.principal.user, #id))")
     public ResponseEntity<UserDTO> updateById(@PathVariable UUID id, @Valid @RequestBody UserDTO userDTO) {
-        log.info("Update user by ID endpoint called. ID: {}", id);
+        log.debug("Update user by ID endpoint called. ID: {}", id);
         User user = userService.updateById(id, userMapper.fromDTO(userDTO));
         return new ResponseEntity<>(userMapper.toDTO(user), HttpStatus.OK);
     }
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     @Operation(summary = "Delete user by ID", description = "Deletes a specific user by its unique ID.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('USER_DELETE') && (hasAuthority('ADMIN_DELETE') || @userPermissionEvaluator.isOwner(authentication.principal.user, #id))")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
-        log.info("Delete user by ID endpoint called. ID: {}", id);
-        eventService.removeGuestFromAllEvents(userService.findById(id));
+        log.debug("Delete user by ID endpoint called. ID: {}", id);
+        eventService.removeUserFromAllEvents(userService.findById(id));
         userService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
