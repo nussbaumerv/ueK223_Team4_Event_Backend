@@ -8,12 +8,11 @@ import java.util.UUID;
 import com.example.demo.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.transaction.annotation.Transactional;
-
 @Entity
 @Table(name = "event")
 @Getter
@@ -23,12 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class Event extends AbstractEntity {
     @NotNull
     @Column
+    @Size(min = 1, max = 100)
     private String name;
     @NotNull
     @Column
     private String date;
     @NotNull
     @Column
+    @Size(min = 1, max = 100)
     private String location;
     @NotNull
     @Column

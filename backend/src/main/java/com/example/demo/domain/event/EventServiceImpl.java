@@ -45,15 +45,15 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
     @Override
     public Page<User> findAllGuest(UUID id, Pageable pageable) {
         log.info("Retrieving all guests of event with ID: {}", id);
-        Event event = repository.findById(id).orElseThrow(() -> new NotFoundException("Event with id: " + id + " not found"));
+
+        Event event = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Event with id: " + id + " not found"));
+
         List<User> guests = event.getGuests();
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), guests.size());
 
-        int pageSize = Math.min(1, pageable.getPageSize());
-        int pageBegin = (int) pageable.getOffset();
-        int pageEnd = Math.min(pageBegin + pageSize, guests.size());
-        List<User> subList = guests.subList(pageBegin, pageEnd);
-
-        return new PageImpl<>(subList, pageable, guests.size());
+        return new PageImpl<>(guests.subList(start, end), pageable, guests.size());
     }
 
     @Override
