@@ -30,7 +30,8 @@ ON CONFLICT DO NOTHING;
 
 --assign roles to users
 insert into users_role (users_id, role_id)
-values ('0d8fa44c-54fd-4cd0-ace9-2a7da57992de', 'd29e709c-0ff1-4f4c-a7ef-09f656c390f1'),
+values ('ba804cb9-fa14-42a5-afaf-be488742fc54', 'd29e709c-0ff1-4f4c-a7ef-09f656c390f1'),
+       ('0d8fa44c-54fd-4cd0-ace9-2a7da57992de', 'd29e709c-0ff1-4f4c-a7ef-09f656c390f1'),
        ('ba804cb9-fa14-42a5-afaf-be488742fc54', 'ab505c92-7280-49fd-a7de-258e618df074'),
        ('f9ed81db-f90a-42d4-b7e4-d554d8f338fd', 'c6aee32d-8c35-4481-8b3e-a876a39b0c02'),
        ('f9ed81db-f90a-42d4-b7e4-d554d8f338fd', 'd29e709c-0ff1-4f4c-a7ef-09f656c390f1')
@@ -47,8 +48,7 @@ VALUES ('d29e709c-0ff1-4f4c-a7ef-09f656c390f1', '2ebf301e-6c61-4076-98e3-2a38b31
        ('ab505c92-7280-49fd-a7de-258e618df074', '5c6d5948-2c06-487c-bd3e-9ae23ded960b'),
        ('c6aee32d-8c35-4481-8b3e-a876a39b0c02', '21c942db-a275-43f8-bdd6-d048c21bf5ab'),
        ('c6aee32d-8c35-4481-8b3e-a876a39b0c02', 'd9b3a36d-4a52-4b08-8415-959a544b2996'),
-       ('c6aee32d-8c35-4481-8b3e-a876a39b0c02', '76d2cbf6-5845-470e-ad5f-2edb9e09a868'),
-       ('d29e709c-0ff1-4f4c-a7ef-09f656c390f1', 'd9b3a36d-4a52-4b08-8415-959a544b2996')
+       ('c6aee32d-8c35-4481-8b3e-a876a39b0c02', '76d2cbf6-5845-470e-ad5f-2edb9e09a868')
 ON CONFLICT DO NOTHING;
 
 --Events
