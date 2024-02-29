@@ -103,10 +103,10 @@ public class EventController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retrieve all possible", description = "Returns all possible guests to add to a event")
+    @Operation(summary = "Retrieve all possible guests", description = "Returns all possible guests to add to a event")
     @GetMapping("/guests/available")
     public ResponseEntity<List<UserDTO>> retrieveAllPossibleGuests() {
-        log.debug("Retrieving all guests of event with ID");
+        log.debug("Retrieving all possible guests");
         List<UserDTO> users = eventService.findAllPossibleGuests().stream().map(userMapper::toDTO).collect(Collectors.toList());
         return new ResponseEntity<>(users, HttpStatus.OK);
     }

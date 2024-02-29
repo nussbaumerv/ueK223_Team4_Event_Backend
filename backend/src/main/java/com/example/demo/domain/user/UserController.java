@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,6 +87,7 @@ public class UserController {
         User user = userService.updateById(id, userMapper.fromDTO(userDTO));
         return new ResponseEntity<>(userMapper.toDTO(user), HttpStatus.OK);
     }
+
     @Operation(summary = "Delete user by ID", description = "Deletes a specific user by its unique ID.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('USER_DELETE') && (hasAuthority('ADMIN_DELETE') || @userPermissionEvaluator.isOwner(authentication.principal.user, #id))")

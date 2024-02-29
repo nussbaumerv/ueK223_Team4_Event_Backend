@@ -66,29 +66,18 @@ public class EventServiceImpl extends AbstractServiceImpl<Event> implements Even
 
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
-    public void removeUserFromAllEvents(User guest) {
-        log.debug("Removing guest from all events with ID: {}", guest.getId());
-        //Remove user from all events where in guests
-      /*  ((EventRepository) repository).findByGuests_Id(guest.getId()).stream().forEach(user -> {
+    public void removeUserFromAllEvents(User user) {
+        log.debug("Removing user from all events with ID: {}", user.getId());
+        //Remove guest from all events where in guests
+        ((EventRepository) repository).findByGuests_Id(user.getId()).forEach(event -> {
             List<User> guests = event.getGuests();
-            guests.remove(guest);
+            guests.remove(user);
             event.setGuests(guests);
             save(event);
-        }); */
-        findAll().stream()
-                .filter(event -> event.getGuests().contains(guest))
-                .forEach(event -> {
-                    List<User> guests = event.getGuests();
-                    guests.remove(guest);
-                    event.setGuests(guests);
-                    save(event);
-                });
+        });
 
         //Remove user from all events where owner
-        findAll().stream().filter(event -> event.getOwner().equals(guest))
-                .forEach(event -> {
-                    event.setOwner(null);
-                });
+        ((EventRepository) repository).findByOwner_Id(user.getId()).forEach(event -> event.setOwner(null));
     }
 
     @Override

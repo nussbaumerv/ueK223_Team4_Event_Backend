@@ -8,8 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface EventRepository extends AbstractRepository<Event> {
-
-
     List<Event> findByGuests_Id(UUID id);
 
     List<Event> findByOwner_Id(UUID id);

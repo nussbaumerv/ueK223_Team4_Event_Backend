@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
 @Entity
 @Table(name = "event")
 @Getter
@@ -26,6 +27,7 @@ public class Event extends AbstractEntity {
     private String name;
     @NotNull
     @Column
+    @Size(min = 6, max = 26)
     private String date;
     @NotNull
     @Column
@@ -33,6 +35,7 @@ public class Event extends AbstractEntity {
     private String location;
     @NotNull
     @Column
+    @Size(min = 1, max = 900)
     private String description;
 
     @ManyToMany
@@ -43,9 +46,6 @@ public class Event extends AbstractEntity {
 
     @ManyToOne
     private User owner;
-
-
-
 
     public Event(UUID id, String name, String date, String location, String description, List<User> guests, User owner) {
         super(id);
