@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -97,9 +98,11 @@ public class EventController {
 
     @Operation(summary = "Retrieve all guests of an event", description = "Returns all guests of a specific event.")
     @GetMapping("/{id}/guests/")
-    public ResponseEntity<Page<UserDTO>> retrieveAllGuests(@PathVariable UUID id, Pageable pageable) {
+    public ResponseEntity<Page<UserDTO>> retrieveAllGuests(@PathVariable UUID id, @RequestParam int size, @RequestParam int  page) {
+        Pageable pageable = PageRequest.of(page,size);
         log.debug("Retrieving all guests of event with ID: {}", id);
         Page<UserDTO> users = eventService.findAllGuest(id, pageable).map(userMapper::toDTO);
+        System.out.println(users);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
